@@ -1,0 +1,161 @@
+import 'package:get/get.dart';
+import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import 'package:admin_dashboard/src/services/{tableName}_service.dart';
+import 'package:admin_dashboard/src/models/{tableName}.dart';
+
+class {ModelName}Controller extends GetxController {
+  final {ModelName}Service _{modelName}Service = {ModelName}Service();
+  final Rx<{ModelName}?> {modelName} = Rx<{ModelName}?>(null);
+  final RxList<{ModelName}> {modelName}List = <{ModelName}>[].obs;
+  final {ModelName}DataSource {modelName}DataSource;
+  final RxBool isLoading = false.obs;
+  final RxDouble pageCount = 1.0.obs;
+  final RxInt currentPageIndex = 1.obs;
+  
+  {ModelName}Controller() : {modelName}DataSource = {ModelName}DataSource([]);
+
+  @override
+  void onInit() {
+    super.onInit();
+    pageCount.value = 1.0;
+    loadPage(0);
+
+    {modelName}List.listen((List<{ModelName}> list) {
+      {modelName}DataSource.updateData(list);
+      {modelName}DataSource.{modelName}List = list;
+    });
+  }
+{controllerFunctions}
+  
+  Future<void> loadPage(int pageIndex) async {
+    if (isLoading.isTrue) {
+      return;
+    }
+	
+    isLoading(true);
+	
+    final int oneBasedPageIndex = pageIndex + 1;
+	   
+    try {
+      var response =
+          await _{modelName}Service.getAll{ModelName}(pageIndex + 1, 10);
+      if (response.isSuccess && response.data != null) {
+        {modelName}List.value = response.data!.data; // Updated line
+        pageCount.value = (response.data!.total / 10)
+            .ceilToDouble(); // Updated line to calculate total pages
+        currentPageIndex.value = oneBasedPageIndex;
+      } else {
+        showError('Error in getAll{ModelName}: ${response.errorMessage}');
+      }
+    } catch (e) {
+      showError('Error in getAll{ModelName}: $e');
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  void showError(String message) {
+    Get.snackbar(
+      'Error',
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+  }
+}
+
+class {ModelName}DataSource extends DataGridSource {
+  List<{ModelName}> {modelName}List;
+  List<DataGridRow> dataGridRows = [];
+
+  {ModelName}DataSource(this.{modelName}List);
+
+  @override
+  List<DataGridRow> get rows => dataGridRows;
+
+  void updateCell(String columnName, int rowIndex, Object? newValue) {
+    // Update the {modelName}List with the new value
+    final {ModelName} updatedSite = {modelName}List[rowIndex];
+    final Map<String, dynamic> updatedSiteJson = updatedSite.toJSON();
+    if (updatedSiteJson.containsKey(columnName)) {
+      updatedSiteJson[columnName] = newValue;
+      {modelName}List[rowIndex] = {ModelName}.fromJSON(updatedSiteJson);
+    }
+
+    // Update the dataGridRows with the new value
+    final DataGridRow oldRow = dataGridRows[rowIndex];
+    final List<DataGridCell> updatedCells = oldRow.getCells().map((cell) {
+      if (cell.columnName == columnName) {
+        return DataGridCell<dynamic>(
+          columnName: columnName,
+          value: newValue,
+        );
+      }
+      return cell;
+    }).toList();
+
+    dataGridRows[rowIndex] = DataGridRow(cells: updatedCells);
+    notifyListeners();
+  }
+
+  @override
+  DataGridRowAdapter? buildRow(DataGridRow row) {
+    return DataGridRowAdapter(
+        cells: row.getCells().map((dataGridCell) {
+      return Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        child: Text(dataGridCell.value.toString()),
+      );
+    }).toList());
+  }
+
+  void updateData(List<{ModelName}> {modelName}List) {
+    dataGridRows = {modelName}List.map<DataGridRow>(({modelName}) {
+      final {modelName}Map = {modelName}.toJSON();
+      final cells = {modelName}Map.entries.map((entry) {
+        return DataGridCell<dynamic>(
+          columnName: entry.key,
+          value: entry.value,
+        );
+      }).toList();
+      return DataGridRow(cells: cells);
+    }).toList();
+    notifyListeners();
+  }
+
+  @override
+  Widget buildEditWidget(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex,
+      GridColumn column, submitCell) {
+    return TextFormField(
+      initialValue: dataGridRow
+          .getCells()
+          .firstWhere((cell) => cell.columnName == column.columnName)
+          .value
+          .toString(),
+      onFieldSubmitted: (value) {
+        // Update the data source with the new value
+        final int rowIndex = rowColumnIndex.rowIndex;
+        final String columnName = column.columnName;
+        updateCell(columnName, rowIndex, value);
+
+        // Get the first column value of the current row
+        final firstColumnValue = dataGridRow.getCells()[0].value;
+
+        // Make an API call to update the data on the server
+        final {ModelName}Controller controller = Get.find();
+        controller.update{ModelName}(firstColumnValue, {modelName}List[rowIndex]);
+
+        // Submit the cell to close the editor
+        submitCell();
+      },
+      autofocus: true,
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.all(8.0),
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+}

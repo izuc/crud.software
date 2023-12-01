@@ -1,0 +1,33 @@
+<?php
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class {modelName} extends Model
+{ 
+    protected $table = "{tableName}";
+    public $timestamps = false;
+    protected $primaryKey = {primaryKey};
+    public $boolean = 1;
+    {foreignKeyRelationship}
+     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        {requiredProperty}
+    ];
+
+     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        {castProperty}
+    ];
+
+    use HasFactory;
+}

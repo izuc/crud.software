@@ -1,0 +1,81 @@
+<?php
+namespace App\Models;
+
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+
+use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
+
+
+class {modelName} extends Authenticatable implements JWTSubject
+{ 
+    protected $table = "{tableName}";
+    public $timestamps = false;
+    public $boolean = 1;
+    protected $primaryKey = {primaryKey};
+    use HasFactory, Notifiable;
+
+    {foreignKeyRelationship}
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+       {requiredProperty}
+    ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+    {hiddenProperty}
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+         {castProperty}
+        
+    ];
+    
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier() {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims() {
+        return [];
+    }
+
+     /**
+     * Get the password for the user.
+     *
+     * @return string
+     */
+    public function getAuthPassword()
+    {
+        return $this->{passwordColumn};
+    }
+
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = $value;
+    }
+}

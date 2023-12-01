@@ -1,0 +1,10 @@
+import 'package:admin_dashboard/src/services/api.dart';
+import 'package:admin_dashboard/src/services/response.dart';
+import '{importModel}';
+
+class {ModelName}Service {
+
+{serviceFunctions}
+
+}
+
