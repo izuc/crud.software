@@ -1,8 +1,9 @@
-
 # CRUD.software: Laravel API & Flutter Web Template Generator
 
 **Introduction**: 
-Introducing CRUD.software, an innovative tool designed to seamlessly convert MySQL database connections into a robust Laravel 10 API, subsequently generating a Flutter Web template application. This software is tailored for developers seeking an efficient path from database architecture to fully functional web applications.
+Introducing CRUD.software, an innovative JAVA tool designed to seamlessly convert MySQL database connections into a robust Laravel 10 API, subsequently generating a Flutter Web template application. This software is tailored for developers seeking an efficient path from database architecture to fully functional web applications.
+
+To get started. Click on run.bat which will compile the jar file and launch it. Enter the connection details, and select the tables - then click 'Generate API'
 
 **Key Features**:
 - Automated generation of services, models, and views for CRUD operations.
@@ -29,8 +30,5 @@ Ideal for developers looking for a quick and reliable way to turn database schem
 **Technical Requirements**: 
 Basic knowledge of Laravel 10 and Flutter is recommended for a smooth setup and customization experience.
 
-**Support and Documentation**: 
-Comprehensive documentation and support are available for users to get the most out of CRUD.software.
-
 **Conclusion**: 
-Whether you're a seasoned developer or just starting out, CRUD.software is your go-to tool for creating high-quality web applications with ease. Experience the power of streamlined development today!
+Whether you're a seasoned developer or just starting out, CRUD.software is your go-to tool for creating high-quality web applications with ease.
